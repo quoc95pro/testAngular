@@ -1,0 +1,7 @@
+<h3>{{ cityName === '' ? 'Enter your city name' : (cityName + ' is now ' + temp)}}</h3>
+<input placeholder="Enter your city !" [(ngModel)]="txtCity">
+<br><br>
+<button (click)="getWeather();">Get weather</button>
+<button (click)="getImage();">Get weather</button>
+
+<img [src] ="link" height="100px" width="100px"/>
