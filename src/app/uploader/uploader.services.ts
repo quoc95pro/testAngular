@@ -4,7 +4,7 @@ import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 
-export class WeatherServices{
+export class UploadServices{
     constructor(private http : Http){}
 
     getTemp(cityName: string){
@@ -16,17 +16,17 @@ export class WeatherServices{
 
     }
 
-    getImage(img: string){
+    getImage(file: File){
         let header = new Headers();
-        header.append('Authorization', 'Client-ID 0fe8fd718e47c32');
-        const url = 'https://api.imgur.com/3/image/kkRCxRa'
-        return this.http.get(url, {headers : header})
+        let formData: FormData = new FormData();
+        formData.append('image', file);
+        //header.append('Authorization', 'Client-ID 0fe8fd718e47c32');
+        header.append('Authorization', 'Bearer 4f5aa0a7f10b625a741afff9e46be10da5da256e');
+        const url = 'https://api.imgur.com/3/image'
+        return this.http.post(url, formData ,{headers : header})
         .toPromise()
         .then(res => res.json())
-        .then(resJson => resJson.data.link)
+        //.then(resJson => resJson.data.link)
     }
 
-    base64Test(){
-        return atob('password');
-    }
 }
