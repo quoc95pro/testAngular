@@ -5,6 +5,7 @@ import { UploadServices } from './uploader.services'
 
 import $ from 'jquery/dist/jquery.min';
 
+
 @Component({
   selector: 'app-uploader',
   templateUrl: './uploader.component.html',
@@ -28,10 +29,10 @@ export class UploaderComponent implements OnInit {
     this.uploadResult.uploadingText = this.uploadingText;
     $("#fileUploadInput").trigger("click");
   }
-  fileChange(event) {
+   async fileChange(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
-      let file: File = fileList[0];
+     
 
 
       // let formData: FormData = new FormData();
@@ -59,18 +60,43 @@ export class UploaderComponent implements OnInit {
       // };
       // xhr.open('POST', "http://minhquandalat.com/api/FileUpload", true);
       // xhr.send(formData);
-
-
-
-      this.uploadServices.getImage(file)
+      var link = [];
+        for (let index = 0; index < fileList.length; index++) {
+        let file: File = fileList[index];
+        //console.log(fileList[index].name+': '+ fileList[index].size);
+        await this.uploadServices.getImage(file)
       .then(res => {
-        if(res.status===200){
+         if(res.status===200){
             this.uploadResult.progress = 100;
             this.uploadResult.fileUrl = res.data.link;
             this.uploadResult.uploadingText = "Hoàn thành";
+            link.push(res.data.link);
+        }
+        else{
+          console.log('err');
+          
         }
           
       })
+        
+      }
+      
+      console.log(link);
+      
+      
+      // this.uploadServices.getImage(file)
+      // .then(res => {
+      //   if(res.status===200){
+      //       this.uploadResult.progress = 100;
+      //       this.uploadResult.fileUrl = res.data.link;
+      //       this.uploadResult.uploadingText = "Hoàn thành";
+      //   }
+      //   else{
+      //     console.log('err');
+          
+      //   }
+          
+      // })
     }
   }
 }

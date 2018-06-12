@@ -16,7 +16,7 @@
 
               <div class="x_content">
 
-                <input type="file" id="fileUploadInput" accept="images/*" (change)="fileChange($event)" />
+                <input type="file" id="fileUploadInput" accept="images/*" (change)="fileChange($event)" multiple="multiple" />
                 <div id="uploader"                    (click)="doUploadFile()">
                  <i class="fa fa-picture-o"></i> {{uploadResult.uploadingText}}
                 </div>
