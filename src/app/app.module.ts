@@ -6,17 +6,21 @@ import { FormsModule } from '@angular/forms'
 import { AppComponent } from './app.component';
 import { TestServicesComponent } from './test-services/test-services.component';
 import { UploaderComponent } from './uploader/uploader.component';
+import { AppRoutingModule } from './app-routing.module';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     TestServicesComponent,
-    UploaderComponent
+    UploaderComponent,
+  
   ],
   imports: [
     BrowserModule,
     HttpModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule 
   ],
   providers: [],
   bootstrap: [AppComponent]
