@@ -1,0 +1,63 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-8">
+      <table data-pagination="true" 
+             data-search="true" 
+             data-toggle="table" 
+             data-url="http://localhost:3000/api/idols/0"
+             data-striped = "true"
+             data-pagination="true"
+             data-page-size="10"
+             data-page-list="[10,15,20]"
+             data-pagination-first-text="First"
+             data-pagination-pre-text="Previous"
+             data-pagination-next-text="Next"
+             data-pagination-last-text="Last"
+             id="table"
+             >
+      </table>
+    </div>
+    <div class="col-md-2">
+      
+      </div>
+  </div>
+</div>
+
+<script>
+
+  var $table = $('#table');
+
+  $(function () {
+      $table.bootstrapTable({
+          idField: 'name',
+          columns: [{
+              field: 'state',
+              title: '',
+              checkbox: true
+          }, {
+              field: 'name',
+              title: 'names',
+              sortable: true,
+              editable: {
+                  type: 'select',
+                  source: [
+                      {value: 'active', text: 'Active'},
+                      {value: 'blocked', text: 'Blocked'},
+                      {value: 'deleted', text: 'Deleted'}
+                  ]
+              }
+          }, {
+              field: 'price',
+              title: 'prices',
+              sortable: true,
+          }],
+          data: data
+      });
+  });
+</script>
+
+
+

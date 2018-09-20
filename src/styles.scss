@@ -1,0 +1,12 @@
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import "~bootstrap/scss/mixins";
+
+
+.normal {
+  @import "lib/toastr.css";
+}
+.bootstrap {
+  @import "lib/toastr-bs4-alert";
+}
+

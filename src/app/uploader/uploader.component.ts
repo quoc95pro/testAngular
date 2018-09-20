@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,Renderer2, ElementRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Http } from '@angular/http';
 import { UploadServices } from './uploader.services'
-
+import { HttpEventType, HttpResponse, HttpErrorResponse } from "@angular/common/http";
 import $ from 'jquery/dist/jquery.min';
+import { ToastrService } from 'ngx-toastr';
+import { ViewChild } from '@angular/core';
+
 
 
 @Component({
@@ -19,84 +22,85 @@ export class UploaderComponent implements OnInit {
     uploadingText: this.uploadingText,
     fileUrl: null
   }
-  constructor(private title: Title, private uploadServices : UploadServices) { }
+
+  @ViewChild('fileUploadInput')
+  myInputVariable: ElementRef;
+
+  current = 0;
+
+  arrUploadResult = [];
+
+  enableBootstrap = true;
+  constructor(private title: Title, private uploadServices : UploadServices, private toastr: ToastrService, private renderer: Renderer2) { 
+    this.renderer.addClass(document.body, 'bootstrap');
+  }
   ngOnInit() {
     this.title.setTitle("Angular 4 - Upload file"); 
   }
   doUploadFile() {
+    console.log("ssss"+this.myInputVariable.nativeElement.files);
+    this.myInputVariable.nativeElement.value = "";
+    console.log(this.myInputVariable.nativeElement.files);
     this.uploadResult.progress = 0;
     this.uploadResult.fileUrl = null;
     this.uploadResult.uploadingText = this.uploadingText;
     $("#fileUploadInput").trigger("click");
   }
-   async fileChange(event) {
+    fileChange(event) {
     let fileList: FileList = event.target.files;
     if (fileList.length > 0) {
      
-
-
-      // let formData: FormData = new FormData();
-      // formData.append('uploadFile', file);
-      // let xhr: XMLHttpRequest = new XMLHttpRequest();
-      // xhr.withCredentials = false;
-      // xhr.onreadystatechange = () => {
-      //   if (xhr.readyState === 4) {
-      //     if (xhr.status === 200) {
-      //       let json = JSON.parse(xhr.response);
-      //       let fileUrl = 'http://minhquandalat.com/uploads/' + json.Name;
-      //       this.uploadResult.progress = 100;
-      //       this.uploadResult.fileUrl = fileUrl;
-      //       this.uploadResult.uploadingText = "Hoàn thành";
-
-      //     } else {
-      //       console.log(xhr.response);
-      //     }
-      //   }
-      // };
-      // xhr.upload.onprogress = (event) => {
-      //   this.uploadResult.uploadingText = "Đang tải ảnh lên...";
-      //   let percentVal = Math.round(event.loaded / event.total * 100);
-      //   this.uploadResult.progress = percentVal;
-      // };
-      // xhr.open('POST', "http://minhquandalat.com/api/FileUpload", true);
-      // xhr.send(formData);
       var link = [];
         for (let index = 0; index < fileList.length; index++) {
         let file: File = fileList[index];
-        //console.log(fileList[index].name+': '+ fileList[index].size);
-        await this.uploadServices.getImage(file)
-      .then(res => {
-         if(res.status===200){
-            this.uploadResult.progress = 100;
-            this.uploadResult.fileUrl = res.data.link;
-            this.uploadResult.uploadingText = "Hoàn thành";
-            link.push(res.data.link);
-        }
-        else{
-          console.log('err');
-          
-        }
-          
-      })
+        this.arrUploadResult.push({
+          progress: 0,
+          uploadingText: this.uploadingText,
+          fileUrl: null
+        });
+
+         this.uploadServices.PostImage(file).subscribe(event => {
+         
+          if (event.type === HttpEventType.UploadProgress) {
+            const percentDone = Math.round(100 * event.loaded / event.total);
+            this.arrUploadResult[index].progress = percentDone;           
+            this.uploadResult.progress =  this.current + Math.round(100 * event.loaded / event.total / fileList.length);
+          } else if (event instanceof HttpResponse) {
+            
+            
+            
+            let a  = JSON.parse(JSON.stringify(event.body));
+            console.log(a);
+            
+            this.toastr.success(`upload success with ${a.data.id}`, 'message',{
+              timeOut: 7000,
+              closeButton : true,
+              progressBar : true,
+              progressAnimation : 'increasing',
+              tapToDismiss : true
+            });
+            this.uploadResult.progress = this.current += Math.round(100 / fileList.length);
+            console.log(this.current);
+            
+          } 
+         
+        }, err => {
+          if (err instanceof HttpErrorResponse) {
+            console.log(err);
+            
+            let a  = JSON.parse(JSON.stringify(err));
+            this.toastr.error(`upload error ${a.error.data.error.message}`, 'message',{
+              timeOut: 7000,
+              closeButton : true,
+              progressBar : true,
+              progressAnimation : 'increasing',
+              tapToDismiss : true
+            });
+          } 
+        });
+
         
       }
-      
-      console.log(link);
-      
-      
-      // this.uploadServices.getImage(file)
-      // .then(res => {
-      //   if(res.status===200){
-      //       this.uploadResult.progress = 100;
-      //       this.uploadResult.fileUrl = res.data.link;
-      //       this.uploadResult.uploadingText = "Hoàn thành";
-      //   }
-      //   else{
-      //     console.log('err');
-          
-      //   }
-          
-      // })
     }
   }
 }

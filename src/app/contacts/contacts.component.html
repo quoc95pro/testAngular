@@ -1,3 +1,4 @@
 <div *ngFor="let contact of contacts">
   <a routerLink="/details/{{ contact.id }}/{{ contact.name }}/{{ contact.phoneNumber }}">{{ contact.name }}</a>
 </div>
+<app-page-not-found></app-page-not-found>

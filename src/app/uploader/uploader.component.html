@@ -16,12 +16,15 @@
 
               <div class="x_content">
 
-                <input type="file" id="fileUploadInput" accept="images/*" (change)="fileChange($event)" multiple="multiple" />
+                <input type="file" #fileUploadInput id="fileUploadInput" accept="images/*" (change)="fileChange($event)" multiple="multiple" />
                 <div id="uploader"                    (click)="doUploadFile()">
                  <i class="fa fa-picture-o"></i> {{uploadResult.uploadingText}}
                 </div>
                 <div class="progress progress-striped" *ngIf="uploadResult.progress > 0">
                   <div class="progress-bar progress-bar-success"  [ngStyle]="{'width':  uploadResult.progress+'%'}">{{uploadResult.progress}}%</div>
+                </div>
+                <div class="progress progress-striped" *ngFor="let result of arrUploadResult" >
+                  <div class="progress-bar progress-bar-success"  [ngStyle]="{'width':  result.progress+'%'}">{{result.progress}}%</div>
                 </div>
                 <img  *ngIf="uploadResult.fileUrl" src="{{uploadResult.fileUrl}}" style="width:100%;" class="img-response">
               </div>
@@ -30,6 +33,5 @@
         </div>
       </div>
     </div>
-
   </div>
 </div>
